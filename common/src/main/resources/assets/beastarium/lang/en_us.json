@@ -1,0 +1,10 @@
+{
+  "item.beastarium.emerald_nugget": "Emerald Nugget",
+  "item.beastarium.emerald_nugget.tooltip": "Currency worth 1:9 of an ",
+  "item.beastarium.zoo_enclosure": "Zoo Enclosure",
+  "item.beastarium.zoo_enclosure.tooltip.0": "Use on the ground to automatically create an enclosed zoo enclosure.",
+  "item.beastarium.zoo_enclosure.tooltip.1": "Detects fences and 2 block tall obstacles.",
+  "item.beastarium.path_maker": "Path Maker",
+  "item.beastarium.path_maker.tooltip": "Use on blocks to set them as walkable paths by guests.",
+  "itemGroup.beastarium.beastarium": "Beastarium: Zoo Tycoon"
+}

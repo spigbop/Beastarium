@@ -1,6 +1,6 @@
 {
     "schemaVersion": 1,
-    "id": "mod_id",
+    "id": "beastarium",
     "version": "${version}",
     "name": "${mod_name}",
     "description": "${description}",
@@ -12,11 +12,11 @@
         "sources": "https://github.com/FabricMC/fabric-example-mod"
     },
     "license": "${license}",
-    "icon": "assets/modid/${mod_id}.png",
+    "icon": "assets/beastarium/${mod_id}.png",
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.example.examplemod.ExampleMod"
+            "com.stellarith.beastarium.BeastariumFabric"
         ]
     },
     "mixins": [
