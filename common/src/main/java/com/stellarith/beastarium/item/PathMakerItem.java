@@ -2,16 +2,21 @@ package com.stellarith.beastarium.item;
 
 import com.stellarith.beastarium.Constants;
 import com.stellarith.beastarium.ModColors;
+import com.stellarith.beastarium.groups.PlayerZoos;
+import com.stellarith.beastarium.groups.Zoo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -39,14 +44,22 @@ public class PathMakerItem extends Item {
         if(context.getLevel().isClientSide)
             return InteractionResult.PASS;
 
-        if(pathBlocks.contains(blockPos)) {
-            Constants.LOG.info("Removed path: " + blockPos.toShortString());
-            pathBlocks.remove(blockPos);
-        } else {
-            Constants.LOG.info("Added path: " + blockPos.toShortString());
-            pathBlocks.add(blockPos);
+        Zoo zoo = PlayerZoos.get((ServerLevel) context.getLevel()).getGroup(context.getPlayer().getUUID());
+        if(zoo == null) {
+            pathBlocks = new ArrayList<>();
+            return InteractionResult.PASS;
         }
+
+        if(zoo.pathBlocks.contains(blockPos)) {
+            zoo.pathBlocks.remove(blockPos);
+        } else {
+            zoo.pathBlocks.add(blockPos);
+        }
+
+        pathBlocks = zoo.pathBlocks;
 
         return InteractionResult.SUCCESS;
     }
+
+
 }

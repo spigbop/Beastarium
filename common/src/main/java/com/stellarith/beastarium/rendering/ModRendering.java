@@ -1,16 +1,13 @@
 package com.stellarith.beastarium.rendering;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.stellarith.beastarium.Constants;
+import com.stellarith.beastarium.groups.PlayerZoos;
+import com.stellarith.beastarium.item.ModItems;
 import com.stellarith.beastarium.item.PathMakerItem;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
@@ -32,15 +29,14 @@ public class ModRendering {
             {1,0,1},{1,1,1},
             {0,0,1},{0,1,1}
     };
-    public static boolean pathViewMode = true;
 
 
     public static void renderLevelEventHook(PoseStack poseStack, Matrix4f projMatrix) {
-        if(!pathViewMode)
-            return;
-
         Minecraft mc = Minecraft.getInstance();
         if(mc.level == null || mc.player == null)
+            return;
+
+        if(!mc.player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.PATH_MAKER))
             return;
 
         Vec3 view = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
