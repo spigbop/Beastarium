@@ -1,5 +1,6 @@
 package com.stellarith.beastarium.groups;
 
+import com.stellarith.beastarium.zoo.Enclosure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -10,8 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Zoo extends PlayerOrganization{
+public class Zoo extends PlayerOrganization {
     public List<BlockPos> pathBlocks = new ArrayList<>();
+    public List<Enclosure> enclosures = new ArrayList<>();
 
     public Zoo(UUID owner) {
         super(owner);
@@ -50,5 +52,24 @@ public class Zoo extends PlayerOrganization{
         }
 
         return zoo;
+    }
+
+    public void addEnclosure(Enclosure enclosure) {
+        enclosures.add(enclosure);
+    }
+
+    public void removeEnclosure(Enclosure enclosure) {
+        enclosures.remove(enclosure);
+    }
+
+    public void removeEnclosure(int enclosureId) {
+        int index = 0;
+        for(Enclosure enclosure : enclosures) {
+            if(enclosure.id() == enclosureId) {
+                enclosures.remove(index);
+                break;
+            }
+            index ++;
+        }
     }
 }

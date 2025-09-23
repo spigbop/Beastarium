@@ -1,5 +1,6 @@
 package com.stellarith.beastarium.groups;
 
+import com.stellarith.beastarium.zoo.Enclosure;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -15,6 +16,12 @@ public class PlayerZoos extends SavedData {
 
     public static PlayerZoos load(CompoundTag compoundTag) {
         PlayerZoos zoos = new PlayerZoos();
+
+        ListTag enclosuresList = compoundTag.getList("Enclosures", Tag.TAG_COMPOUND);
+        for(Tag enclosureTag : enclosuresList) {
+            Enclosure.fromNbt((CompoundTag) enclosureTag);
+            // auto-loads
+        }
 
         ListTag teamsList = compoundTag.getList("PlayerZoos", Tag.TAG_COMPOUND);
         for(Tag teamTag : teamsList) {
@@ -36,6 +43,13 @@ public class PlayerZoos extends SavedData {
             teamsList.add(group.toNbt());
         }
         compoundTag.put("PlayerZoos", teamsList);
+
+        ListTag enclosuresList = new ListTag();
+        for(Enclosure enclosure : Enclosure.enclosures.values()) {
+            enclosuresList.add(enclosure.toNbt());
+        }
+        compoundTag.put("Enclosures", enclosuresList);
+
         return compoundTag;
     }
 

@@ -5,28 +5,53 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerGroup {
+    private static int next = 0;
+    private static HashMap<Integer, ? extends PlayerGroup> groups = new HashMap<>();
+
     private final Set<Member> members;
-    
+    private final int id;
+
     public String title = "Untitled";
 
     public PlayerGroup(UUID owner) {
         members = new HashSet<>();
         members.add(new Member(owner, Member.Levels.Owner));
+
+        while(groups.containsKey(next))
+            next ++;
+
+        this.id = next;
+        groups.put(next, this);
+
+        next ++;
     }
 
     public PlayerGroup(Member members[]) {
         this.members = new HashSet<>();
         this.members.addAll(Arrays.asList(members));
+
+        while(groups.containsKey(next))
+            next ++;
+
+        this.id = next;
+        groups.put(next, this);
+
+        next ++;
     }
 
     public PlayerGroup(HashSet<Member> members) {
         this.members = members;
+
+        while(groups.containsKey(next))
+            next ++;
+
+        this.id = next;
+        groups.put(next, this);
+
+        next ++;
     }
 
     public PlayerGroup(UUID owner, String title) {
@@ -34,6 +59,14 @@ public class PlayerGroup {
         members.add(new Member(owner, Member.Levels.Owner));
 
         this.title = title;
+
+        while(groups.containsKey(next))
+            next ++;
+
+        this.id = next;
+        groups.put(next, this);
+
+        next ++;
     }
 
     public Member[] getMembers() {

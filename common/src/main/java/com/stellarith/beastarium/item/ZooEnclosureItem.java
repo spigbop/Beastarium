@@ -2,12 +2,14 @@ package com.stellarith.beastarium.item;
 
 import com.stellarith.beastarium.Constants;
 import com.stellarith.beastarium.ModColors;
+import com.stellarith.beastarium.zoo.Enclosure;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -80,14 +82,17 @@ public class ZooEnclosureItem extends Item {
             searches ++;
         }
 
+        ItemStack stack = context.getItemInHand();
+        stack.getOrCreateTag().putBoolean("EnclosureAssigned", true);
+
+        Enclosure enclosureObject = new Enclosure(
+                searched, context.getPlayer().getUUID(), (ServerLevel) context.getLevel());
+        stack.getOrCreateTag().putInt("EnclosureObjectId", enclosureObject.id());
+
         context.getPlayer().displayClientMessage(
                 Component.translatable("item.beastarium.zoo_enclosure.success", searched.size())
                         .withStyle(ChatFormatting.GREEN),
                 true);
-
-        ItemStack stack = context.getItemInHand();
-        stack.getOrCreateTag().putBoolean("EnclosureAssigned", true);
-        stack.getOrCreateTag().putBoolean("EnchantmentsGlintOverride", true);
 
         return InteractionResult.SUCCESS;
     }
