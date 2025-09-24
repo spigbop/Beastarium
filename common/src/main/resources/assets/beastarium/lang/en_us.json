@@ -7,6 +7,7 @@
   "item.beastarium.zoo_enclosure.assigned.tooltip.0": "This enclosure has been assigned.",
   "item.beastarium.zoo_enclosure.assigned": "Zoo Enclosure ({0})",
   "item.beastarium.zoo_enclosure.too_big": "This enclosure is too big or missing some walls!",
+  "item.beastarium.zoo_enclosure.no_zoo": "You don't have a zoo to create this enclosure for!",
   "item.beastarium.zoo_enclosure.success": "Created an enclosure of size {0} blocks!",
   "item.beastarium.path_maker": "Path Maker",
   "item.beastarium.path_maker.tooltip": "Use on blocks to set them as walkable paths by guests.",

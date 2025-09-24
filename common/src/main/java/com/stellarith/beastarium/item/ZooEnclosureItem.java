@@ -2,6 +2,7 @@ package com.stellarith.beastarium.item;
 
 import com.stellarith.beastarium.Constants;
 import com.stellarith.beastarium.ModColors;
+import com.stellarith.beastarium.groups.PlayerZoos;
 import com.stellarith.beastarium.zoo.Enclosure;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -11,6 +12,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -51,7 +53,15 @@ public class ZooEnclosureItem extends Item {
         if(context.getItemInHand().getOrCreateTag().getBoolean("EnclosureAssigned"))
             return InteractionResult.PASS;
 
-        Constants.LOG.info("Used enclosure on block: " + context.getClickedPos().toShortString());
+        Player player = context.getPlayer();
+        UUID uuid = player.getUUID();
+        if(PlayerZoos.get((ServerLevel) level).getGroup(uuid) == null) {
+            player.displayClientMessage(
+                    Component.translatable("item.beastarium.zoo_enclosure.no_zoo")
+                            .withStyle(ChatFormatting.RED),
+                    true);
+            return InteractionResult.FAIL;
+        }
 
         Set<BlockPos> searched = new HashSet<>();
         Queue<BlockPos> queue = new LinkedList<>();
@@ -60,7 +70,7 @@ public class ZooEnclosureItem extends Item {
 
         while(!queue.isEmpty()) {
             if(searches > MAX_SEARCH_SIZE) {
-                context.getPlayer().displayClientMessage(
+                player.displayClientMessage(
                         Component.translatable("item.beastarium.zoo_enclosure.too_big")
                                 .withStyle(ChatFormatting.RED),
                         true);
@@ -86,10 +96,10 @@ public class ZooEnclosureItem extends Item {
         stack.getOrCreateTag().putBoolean("EnclosureAssigned", true);
 
         Enclosure enclosureObject = new Enclosure(
-                searched, context.getPlayer().getUUID(), (ServerLevel) context.getLevel());
+                searched, player.getUUID(), (ServerLevel) context.getLevel());
         stack.getOrCreateTag().putInt("EnclosureObjectId", enclosureObject.id());
 
-        context.getPlayer().displayClientMessage(
+        player.displayClientMessage(
                 Component.translatable("item.beastarium.zoo_enclosure.success", searched.size())
                         .withStyle(ChatFormatting.GREEN),
                 true);
