@@ -4,10 +4,12 @@ import com.mojang.blaze3d.vertex.*;
 import com.stellarith.beastarium.groups.PlayerZoos;
 import com.stellarith.beastarium.item.ModItems;
 import com.stellarith.beastarium.item.PathMakerItem;
+import com.stellarith.beastarium.zoo.Enclosure;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
@@ -30,13 +32,25 @@ public class ModRendering {
             {0,0,1},{0,1,1}
     };
 
+    private static final byte RENDERING_DISABLED = 0;
+    private static final byte RENDERING_PATHS = 1;
+    private static final byte RENDERING_ENCLOSURES = 2;
 
     public static void renderLevelEventHook(PoseStack poseStack, Matrix4f projMatrix) {
         Minecraft mc = Minecraft.getInstance();
         if(mc.level == null || mc.player == null)
             return;
 
-        if(!mc.player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.PATH_MAKER))
+        ItemStack hand = mc.player.getItemInHand(InteractionHand.MAIN_HAND);
+
+        byte mode = RENDERING_DISABLED;
+        if(hand.is(ModItems.PATH_MAKER)) {
+            mode = RENDERING_PATHS;
+        } else if(hand.is(ModItems.ZOO_ENCLOSURE)) {
+            mode = RENDERING_ENCLOSURES;
+        }
+
+        if(mode == RENDERING_DISABLED)
             return;
 
         Vec3 view = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
@@ -46,8 +60,19 @@ public class ModRendering {
         VertexBuffer vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
         buffer.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
 
-        for(BlockPos pos : PathMakerItem.pathBlocks) {
-            drawBlockOutline(buffer, pos, 0.004D, 1.0F, 0.84F, 0.0F, 1.0F);
+        if(mode == RENDERING_PATHS) {
+            for (BlockPos pos : PathMakerItem.pathBlocks) {
+                drawBlockOutline(buffer, pos, 0.004D, 1.0F, 0.84F, 0.0F, 1.0F);
+            }
+        } else {
+            if(hand.hasTag() && hand.getTag().contains("EnclosureObjectId")) {
+                Enclosure enclosure = Enclosure.ofId(hand.getOrCreateTag().getInt("EnclosureObjectId"));
+                if(enclosure != null) {
+                    for(BlockPos pos : enclosure.blocks()) {
+                        drawBlockOutline(buffer, pos, 0.004D, 0.0F, 0.84F, 1.0F, 1.0F);
+                    }
+                }
+            }
         }
 
         vertexBuffer.bind();

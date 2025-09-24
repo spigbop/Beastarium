@@ -9,7 +9,7 @@ import java.util.*;
 
 public class PlayerGroup {
     private static int next = 0;
-    private static HashMap<Integer, ? extends PlayerGroup> groups = new HashMap<>();
+    private static HashMap<Integer, ? super PlayerGroup> groups = new HashMap<>();
 
     private final Set<Member> members;
     private final int id;

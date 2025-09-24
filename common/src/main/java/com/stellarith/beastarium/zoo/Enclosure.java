@@ -30,6 +30,9 @@ public class Enclosure {
     public int id() {
         return this.id;
     }
+    public Set<BlockPos> blocks() {
+        return this.blocks;
+    }
 
     public Enclosure(Set<BlockPos> blocks, UUID fromPlayer, ServerLevel level) {
         this.blocks = blocks;
