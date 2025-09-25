@@ -7,11 +7,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.npc.Npc;
 
 import java.util.*;
 
 public class Enclosure {
+
+    //region Creation & Serialization
     private static int next = 0;
     public static final Map<Integer, Enclosure> enclosures = new HashMap<>();
 
@@ -92,4 +98,49 @@ public class Enclosure {
 
         return compoundTag;
     }
+    //endregion
+    //region Game
+    private EntityType<? super Mob> species = null;
+    private final List<Mob> members = new ArrayList<>();
+
+    public void setSpecies(EntityType<? super Mob> mob) {
+        if(species == mob || mob instanceof Npc)
+            return;
+
+        this.species = mob;
+        members.clear();
+    }
+
+    public EntityType<? super Mob> getSpecies() {
+        return this.species;
+    }
+
+    public List<Mob> members() {
+        return this.members;
+    }
+
+    public void addMember(Mob mob) {
+        addMember(mob, "nameless test");
+    }
+
+    public void addMember(Mob mob, String name) {
+        if(mob.getType() == species) {
+            mob.setCustomName(Component.literal(name));
+            members.add(mob);
+        }
+    }
+
+    public void removeMember(Mob mob) {
+        members.remove(mob);
+    }
+
+    public void removeMember(UUID uuid) {
+        for(Mob mob : members) {
+            if(uuid == mob.getUUID()) {
+                removeMember(mob);
+                return;
+            }
+        }
+    }
+    //endregion
 }

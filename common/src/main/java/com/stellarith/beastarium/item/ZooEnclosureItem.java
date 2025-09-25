@@ -17,6 +17,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -103,6 +105,10 @@ public class ZooEnclosureItem extends Item {
                 Component.translatable("item.beastarium.zoo_enclosure.success", searched.size())
                         .withStyle(ChatFormatting.GREEN),
                 true);
+
+        // apply enchantment glint
+        stack.enchant(Enchantments.FISHING_LUCK, 1);
+        stack.hideTooltipPart(ItemStack.TooltipPart.ENCHANTMENTS);
 
         return InteractionResult.SUCCESS;
     }
